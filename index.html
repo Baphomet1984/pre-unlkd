@@ -3,17 +3,17 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Door-01 | Playlists MX</title>
-    
+    <title>Door-01 | Key#01</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
-    
+<script src="protect.js" defer></script>
     <style>
         :root {
             --primary-color: #1DB954; 
-            --bg-dark: #000000;
-            --card-bg: #121212;
-            --card-border: #282828;
+            --bg-dark: #000000; 
+            --card-bg: #121212; 
+            --card-border: #282828; 
             --text-color: #ffffff;
+            --accent-gray: #666;
         }
 
         body {
@@ -21,6 +21,7 @@
             font-family: 'Segoe UI', Roboto, sans-serif;
             background-color: var(--bg-dark);
             color: var(--text-color);
+            overflow-x: hidden;
         }
 
         .container {
@@ -29,203 +30,826 @@
             padding: 40px 20px;
         }
 
-        /* Encabezado con Imagen y Título */
-        .header-main {
+        /* --- HEADER & CORE --- */
+        header { text-align: center; margin-bottom: 20px; }
+        .header-img { width: 150px; height: auto; margin-bottom: 10px; }
+
+        .core-access { text-align: center; margin: 30px 0; }
+        .core-button {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            padding: 12px 22px;
+            border-radius: 50px;
+            text-decoration: none;
+            color: #b3b3b3;
+            border: 1px solid var(--card-border);
+            background: rgba(255,255,255,0.02);
+            transition: 0.3s;
+        }
+        .core-button:hover {
+            color: #fff;
+            border-color: var(--primary-color);
+            background: rgba(29, 185, 84, 0.1);
+            box-shadow: 0 0 15px rgba(29, 185, 84, 0.2);
+        }
+
+        /* --- AVATAR SYSTEM (FIJO Y CORREGIDO) --- */
+        #hub-avatar {
+            position: fixed; 
+            top: 20px; 
+            right: 20px; 
+            width: 60px; 
+            height: 60px;
+            border-radius: 50%; 
+            z-index: 10000; /* Siempre al frente */
+            cursor: pointer;
+            background: rgba(0,0,0,0.8); 
+            backdrop-filter: blur(8px);
+            border: 2px solid var(--card-border); 
+            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
             display: flex;
             align-items: center;
             justify-content: center;
-            gap: 20px;
-            margin-bottom: 30px;
+            overflow: hidden;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.5);
         }
 
-        .header-img {
-            width: 100px; /* Ajusta el tamaño de tu imagen aquí */
-            height: 100px;
-            /*border-radius: 50%;
-            object-fit: cover;
-            border: 2px solid var(--primary-color);*/
-        }
-
-        h1 { 
-            color: var(--primary-color); 
-            text-transform: uppercase;
-            letter-spacing: 2px;
-            font-size: 1.8rem;
-            margin: 0;
-        }
-
-        /* Buscador */
-        .search-container {
-            position: relative;
-            margin-bottom: 40px;
-        }
-
-        .search-container i {
-            position: absolute;
-            left: 15px;
-            top: 50%;
-            transform: translateY(-50%);
-            color: #888;
-        }
-
-        #playlistSearch {
-            width: 100%;
-            padding: 15px 15px 15px 45px;
-            background: #242424;
-            border: 1px solid var(--card-border);
-            border-radius: 50px;
-            color: white;
-            font-size: 1rem;
-            outline: none;
-            box-sizing: border-box;
-            transition: all 0.3s ease;
-        }
-
-        #playlistSearch:focus {
+        #hub-avatar:hover { 
+            transform: scale(1.1); 
             border-color: var(--primary-color);
-            background: #2a2a2a;
-            box-shadow: 0 0 10px rgba(29, 185, 84, 0.2);
         }
 
-        h2 { 
-            font-size: 1.1rem; 
-            margin-top: 40px; 
-            color: #b3b3b3;
-            border-bottom: 1px solid var(--card-border);
-            padding-bottom: 10px;
+        #hub-avatar img { 
+            width: 110%; 
+            height: 110%; 
+            object-fit: cover; 
         }
+
+        #avatar-panel {
+            position: fixed; 
+            top: 90px; 
+            right: 20px; 
+            width: 200px; 
+            padding: 15px;
+            border-radius: 12px; 
+            background: rgba(15, 15, 15, 0.98);
+            backdrop-filter: blur(12px); 
+            border: 1px solid var(--card-border);
+            display: none; 
+            z-index: 9999; 
+            box-shadow: 0 10px 30px rgba(0,0,0,0.8);
+        }
+
+        #avatar-panel button {
+            width: 100%; margin-top: 8px; background: #1a1a1a;
+            border: 1px solid #333; color: #ccc; padding: 8px;
+            border-radius: 6px; cursor: pointer; font-size: 0.75rem;
+        }
+
+        /* --- BUSCADOR --- */
+        .search-container { position: relative; margin: 30px 0; }
+        .search-container i { position: absolute; left: 18px; top: 50%; transform: translateY(-50%); color: var(--accent-gray); }
+        #playlistSearch {
+            width: 80%; padding: 15px 15px 15px 50px;
+            background: #181818; border: 1px solid var(--card-border);
+            border-radius: 50px; color: white; outline: none; transition: 0.3s;
+        }
+        #playlistSearch:focus { border-color: var(--primary-color); background: #222; }
+
+        /* --- CONTENIDO --- */
+        .hub-status { font-size: 0.7rem; color: var(--accent-gray); letter-spacing: 1px; text-transform: uppercase; margin-bottom: 20px;}
+        h2 { font-size: 1rem; color: #eee; border-left: 3px solid var(--primary-color); padding-left: 10px; margin-top: 40px; text-transform: uppercase;}
+        h3 { font-size: 0.75rem; color: var(--accent-gray); margin-top: -10px; margin-bottom: 20px;}
 
         ul {
-            list-style: none;
-            padding: 0;
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-            gap: 15px;
-            margin-top: 20px;
+            list-style: none; padding: 0; display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 12px;
         }
-
-        /* Tarjetas de Playlist */
-        .playlist-item {
-            transition: transform 0.3s ease;
-        }
-
-        /* Ocultar elementos cuando no coinciden con la búsqueda */
-        .hidden {
-            display: none;
-        }
-
         .playlist-item a {
-            display: flex;
-            align-items: center;
-            background: var(--card-bg);
-            padding: 16px 20px;
-            border-radius: 8px;
-            text-decoration: none;
-            color: white;
-            border: 1px solid var(--card-border);
-            font-weight: 500;
+            display: flex; align-items: center; background: var(--card-bg);
+            padding: 14px; border-radius: 6px; text-decoration: none;
+            color: #ccc; border: 1px solid var(--card-border); transition: 0.3s;
         }
-
-        .playlist-item a i {
-            margin-right: 15px;
-            font-size: 1.3rem;
-            color: var(--primary-color);
-        }
-
         .playlist-item a:hover {
-            /*background: #282828;
-            border-color: var(--primary-color);
-            transform: translateY(-3px);*/
-            /*li a:hover {
-            background: #282828;
-            border-color: var(--primary-color);
-            transform: translateY(-2px);
-            box-shadow: 0 4px 15px rgba(29, 185, 84, 0.2);*/
-            background: #282828;
-            border-color: var(--primary-color);
-            transform: translateY(-3px);
-            box-shadow: 0 4px 15px rgba(29, 185, 84, 0.2);
+            background: #1e1e1e; border-color: var(--primary-color);
+            color: #fff; transform: translateX(5px);
+        }
+  .playlist-item i {
+    margin-right: 12px;
+    color: var(--primary-color);
+    width: 20px;
+    text-align: center;
+}
+
+/* Colores oficiales suaves */
+.fa-spotify { color: #1DB954; }
+.fa-youtube { color: #FF0000; }
+.fa-soundcloud { color: #FF5500; }
+.fa-discord { color: #5865F2; }
+.fa-whatsapp { color: #25D366; }
+.fa-reddit { color: #FF4500; }
+.fa-wikipedia-w { color: #ffffff; }
+
+.playlist-item a:hover i {
+    filter: brightness(1.1);
+}
+        .miniVideo {
+            width: 100%; height: 200px; border-radius: 8px;
+            border: 1px solid var(--card-border); margin: 10px 0;
+            background: #050505;
         }
 
-        .widget-container {
-            margin-top: 60px;
-            background: #121212;
-            border-radius: 12px;
-            overflow: hidden;
-            border: 1px solid var(--card-border);
-        }
+        .hidden { display: none !important; }
 
-        footer {
-            margin-top: 50px;
-            text-align: center;
-            opacity: 0.4;
-        }
+        footer { margin-top: 60px; opacity: 0.4; font-size: 0.8rem; text-align: center; }
+
+/* --- FRAME RITUAL --- */
+.frame-box {
+    position: relative;
+    width: 100%;
+    height: 220px;
+    margin: 10px 0;
+    border-radius: 8px;
+    overflow: hidden;
+    border: 1px solid var(--card-border);
+    background: #050505;
+    transition: all 0.4s ease;
+}
+
+.frame-box.minimized {
+    height: 42px;
+}
+
+.frame-box::after {
+    content: "CONTENIDO BLOQUEADO";
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.65rem;
+    letter-spacing: 2px;
+    color: #555;
+    background: rgba(0,0,0,0.85);
+    pointer-events: none;
+    transition: opacity 0.3s;
+}
+
+.frame-box.unlocked::after {
+    opacity: 0;
+}
+
+.frame-box iframe {
+    width: 100%;
+    height: 100%;
+    border: none;
+}
+
+#xvideosBtn {
+    opacity: 0.5;
+    filter: grayscale(100%);
+    transition: all 0.3s ease;
+}
+
+#xvideosBtn.armed {
+    opacity: 1;
+    filter: grayscale(0%);
+}
+#xvideosBtn.pressing {
+    animation: pulse 0.4s infinite alternate;
+}
+
+@keyframes pulse {
+    from { transform: scale(1); }
+    to { transform: scale(1.05); }
+}
+/* --- PUERTAS --- */
+/* --- PUERTAS (PESADAS) --- */
+.door {
+    position: absolute;
+    top: 0;
+    width: 50%;
+    height: 100%;
+    background: linear-gradient(
+        to bottom,
+        #0a0a0a,
+        #000
+    );
+    z-index: 5;
+
+    /* PUERTA PESADA */
+    transition:
+        transform 1.9s cubic-bezier(0.3, 0.05, 0.2, 1),
+        opacity 0.6s ease;
+
+    will-change: transform;
+}
+.door-left {
+    left: 0;
+    border-right: 1px solid #111;
+}
+
+.door-right {
+    right: 0;
+    border-left: 1px solid #111;
+}
+
+/* Estado sellado */
+.door-sealed .door-left {
+    transform: translateX(0);
+}
+.door-sealed .door-right {
+    transform: translateX(0);
+}
+
+/* Resistencia inicial */
+.door-preopen .door-left {
+    transform: translateX(-6%);
+}
+
+.door-preopen .door-right {
+    transform: translateX(6%);
+}
+
+/* Estado desbloqueado - apertura pesada */
+.door-open .door-left {
+    transform: translateX(-102%);
+    opacity: 0;
+    transition-delay: 0.15s;
+}
+
+.door-open .door-right {
+    transform: translateX(102%);
+    opacity: 0;
+    transition-delay: 0.3s;
+}
+
+.door-lock {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 1.2rem;
+    opacity: 0.35;
+    filter: grayscale(100%);
+    pointer-events: none;
+    z-index: 6;
+    transition: opacity 0.4s ease, transform 0.4s ease;
+}
+
+/* Al abrir */
+.door-open .door-lock {
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(0.8);
+}
+.avatar-help {
+    width: 26px !important;
+    height: 26px;
+    padding: 0;
+    margin: 10px auto 0 auto;
+
+    border-radius: 50%;
+    border: 1px solid #333;
+
+    background: rgba(255,255,255,0.08);
+    color: #bbb;
+
+    font-weight: bold;
+    font-size: 14px;
+    line-height: 24px;
+
+    cursor: pointer;
+    transition: all 0.25s ease;
+}
+
+.avatar-help:hover {
+    background: rgba(255,255,255,0.25);
+    color: #fff;
+    transform: scale(1.15);
+}
+.red-dot {
+    position: fixed;
+    top: 6px;
+    left: 6px;
+    width: 6px;
+    height: 6px;
+    background: #b00000;
+    border-radius: 50%;
+    opacity: 0.45;
+    z-index: 9999;
+    cursor: pointer;
+    transition: opacity 0.2s ease, transform 0.2s ease;
+}
+
+.red-dot:hover {
+    opacity: 0.9;
+    transform: scale(1.3);
+}
     </style>
 </head>
 <body>
 
-    <div class="container">
-        
-        <header class="header-main">
-            <i class="fab fa-spotify"></i>
-            <h1>Playlists Top México</h1>
-            <img src="aguila-cuchillo.png" class="header-img">
-        </header>
+<div class="container">
+    <header>
+        <img src="../../assets/img/sytemtag-gif2.gif" class="header-img" onerror="this.src='https://via.placeholder.com/150x25?text=SIGNAL+UNLKD'">
+        <h2>UNLKD-USR: Identidad Digital esto es un demo</h2>
 
-        <div class="search-container">
-            <i class="fa fa-search"></i>
-            <input type="text" id="playlistSearch" placeholder="Buscar playlist...">
+        <div class="core-access">
+            <a href="https://baphomet1984.github.io/systemtag/gate/?lvl=core&go=signal-core" class="core-button">
+                <i class="fa-solid fa-layer-group"></i> Acceder a Signal Core
+            </a>
+            <p style="font-size: 0.75rem; color: #666; margin-top: 8px;">Contenido general disponible para todos los usuarios</p>
         </div>
+    </header>
 
-        <main id="playlistLists">
-            <section>
-                <h2>Tendencias</h2>
-                <ul class="playlist-group">
-                    <li class="playlist-item"><a href="https://open.spotify.com/playlist/37i9dQZEVXbO3qyFxbkOE1?si=wIVFtcz8SgGbBb6hjx1THQ"><i class="fab fa-spotify"></i> 1. TOP 50: MEXICO</a></li>
-                    <li class="playlist-item"><a href="https://open.spotify.com/playlist/37i9dQZEVXbLuUZrygauiA?si=njyQxmBESZyrGAHogoaIug"><i class="fab fa-spotify"></i> 2. VIRAL 50: MEXICO</a></li>
-                    <li class="playlist-item"><a href="https://open.spotify.com/playlist/37i9dQZF1DX5BAPG29mHS8?si=69rtevaFTw-aYvAVSMCTmQ"><i class="fab fa-spotify"></i> 3. EXITOS MEXICO</a></li>
-                    <li class="playlist-item"><a href="https://open.spotify.com/playlist/37i9dQZF1DWWhMyyrqZlaY?si=OMDlxjXnSzm_DfU3I2gdwQ"><i class="fab fa-spotify"></i> 4. CORRIDOS TUMBADOS</a></li>
-                    <li class="playlist-item"><a href="https://open.spotify.com/playlist/37i9dQZF1DX5hrSNdL1ktS?si=dJJFlH5hTCC5WUOIqrP1Sw"><i class="fab fa-spotify"></i> 5. REGGAETON MX</a></li>
-                    <li class="playlist-item"><a href="https://open.spotify.com/playlist/37i9dQZF1DWTmGGCbcoQhY?si=9htAtALLTWqE3o3LG9TqNg"><i class="fab fa-spotify"></i> 6. CUMBIA SONIDERA</a></li>
-                    <li class="playlist-item"><a href="https://open.spotify.com/playlist/1z9BMuPLZE7bVemN5E85rV?si=vs4BVFxjTgyUycoBLQpARQ"><i class="fab fa-spotify"></i> 7. HITS TIKTOK MEXICO</a></li>
-                </ul>
-            </section>
+    <div id="hub-avatar"><img id="avatar" alt="System Avatar"></div>
+    <div id="avatar-panel">
+        <p style="margin: 0 0 10px 0; color: var(--primary-color); font-weight: bold;">🜏SYSTEM // UNLKD🔑</p>
+        <button onclick="changeAvatar()"><i class="fa-solid fa-dna"></i> Mutar identidad</button>
+        <button onclick="toggleStealth()"><i class="fa-solid fa-user-secret"></i> Modo sigilo</button>
 
-            <section>
-                <h2>Especiales</h2>
-                <ul class="playlist-group">
-                    <li class="playlist-item"><a href="https://open.spotify.com/playlist/37i9dQZF1EIea0ChiRU7ji?si=l1tpgnOTSceRtCiN5SMSWQ"><i class="fab fa-spotify"></i> 8. METAL DENSO</a></li>
-                    <li class="playlist-item"><a href="https://open.spotify.com/playlist/37i9dQZF1DWYMHB55fgZrY?si=C0gKOkwdS_OKb2gXXrERkQ"><i class="fab fa-spotify"></i> 9. ROCK MEXICANO</a></li>
-                    <li class="playlist-item"><a href="https://open.spotify.com/playlist/37i9dQZF1EIcM7vKLqtJgT?si=MU8P6kObS_efOEAuU7b73A"><i class="fab fa-spotify"></i> 10. TECHNO OSCURO</a></li>
-                    <li class="playlist-item"><a href="https://open.spotify.com/playlist/37i9dQZF1DWTe5ECpTKzMo?si=8IR6Y2vHRByTr_w5FnmT_w"><i class="fab fa-spotify"></i> 11. HIP-HOP MX 24K</a></li>
-                </ul>
-            </section>
-
-            <div class="widget-container">
-                <iframe src='https://widget.spreaker.com/player?show_id=6247023&theme=dark&playlist=show&playlist-continuous=true&chapters-image=true' width='100%' height='400px' title='el panda show' frameborder='0'></iframe>
-            </div>
-        </main>
-
-        <footer>
-            <script type="text/javascript" src="https://contador.websiteout.com/js/2/5/0/0"></script>
-        </footer>
+<button class="avatar-help"
+    onmousedown="helpPressStart(event)"
+    onmouseup="helpPressEnd(event)"
+    ontouchstart="helpPressStart(event)"
+    ontouchend="helpPressEnd(event)">
+    ?
+</button>
+</div>
+    <div class="hub-status">
+        <span>Estado: <b id="hub-status" style="color:var(--primary-color)"></b></span> | 
+        <span>Sinc: <b id="hub-date"></b></span>
     </div>
 
-    <script>
-        document.getElementById('playlistSearch').addEventListener('keyup', function() {
-            let filter = this.value.toUpperCase();
-            let items = document.querySelectorAll('.playlist-item');
+    <div class="search-container">
+        <i class="fa fa-search"></i>
+        <input type="text" id="playlistSearch" placeholder="Filtrar protocolos o webs...">
+    </div>
 
-            items.forEach(item => {
-                let text = item.textContent || item.innerText;
-                if (text.toUpperCase().indexOf(filter) > -1) {
-                    item.classList.remove('hidden');
-                } else {
-                    item.classList.add('hidden');
-                }
-            });
+    <main>
+        <section class="search-section">
+            <h2>Perfil Sonoro</h2>
+            <h3>> Selección personal del portador</h3>
+            <ul>
+                <li class="playlist-item"><a href="  https://open.spotify.com/intl-es/artist/5rmRF0n79RhrXPeAW3xp29"><i class="fab fa-spotify"></i> 1. System Fail</a></li>
+                <li class="playlist-item"><a href="https://open.spotify.com/playlist/37i9dQZF1E4xadFD2IyUbd?si=k3iJLuTITFaWM7hiddSyBQ"><i class="fab fa-spotify"></i> 2. Gotico</a></li>
+                <li class="playlist-item"><a href="https://open.spotify.com/playlist/37i9dQZF1DXcfZ6moR6J0G?si=EnT90tSRRwaTbFD2N0vfGQ"><i class="fab fa-spotify"></i> 3. New Metal</a></li>
+                <li class="playlist-item"><a href="https://open.spotify.com/playlist/37i9dQZF1DWTe5ECpTKzMo?si=dTi2iGlEQJqUDQCHhXrLrQ"><i class="fab fa-spotify"></i> 4. Hip Hop MX 24K</a></li>
+                <li class="playlist-item"><a href="https://open.spotify.com/playlist/37i9dQZF1EIea0ChiRU7ji?si=Eh1WKcBvQBqTfx3IcVPR-Q"><i class="fab fa-spotify"></i> 5. Doom</a></li>
+                <li class="playlist-item"><a href="https://open.spotify.com/playlist/37i9dQZF1DWYMHB55fgZrY?si=C0gKOkwdS_OKb2gXXrERkQ"><i class="fab fa-spotify"></i> 6. ROCK MEXICANO</a></li>
+                <li class="playlist-item"><a href="https://open.spotify.com/playlist/37i9dQZF1EIcM7vKLqtJgT?si=MU8P6kObS_efOEAuU7b73A"><i class="fab fa-spotify"></i> 7. TECHNO OSCURO</a></li>
+            </ul>
+        </section>
+
+        <section class="search-section">
+            <h2>Multimedia</h2>
+            <h3>> Radio / Cine</h3>
+            <div class="frame-box minimized door-sealed" data-frame>
+    <div class="door door-left"></div>
+    <div class="door door-right"></div>
+    <div class="door-lock">🔐</div>
+    <iframe src="https://myradioenvivo.mx/universal-88-1-fm"></iframe>
+</div>
+
+<div class="frame-box minimized door-sealed" data-frame>
+    <div class="door door-left"></div>
+    <div class="door door-right"></div>
+    <div class="door-lock">🔐</div>
+    <iframe data-src="https://la.movie/"></iframe>
+</div>
+
+        </section>
+
+        <section class="search-section">
+            <h2>Tus Webs</h2>
+            <ul>
+                <li class="playlist-item"><a href="https://mail.google.com/mail/mu/mp/535/#tl/priority/%5Esmartlabel_personal"><i class="fa-solid fa-envelope"></i> GMAIL</a></li>
+                <li class="playlist-item"><a href="https://www.lacartoons.com/"><i class="fa-solid fa-tv"></i> CARTOONS</a></li>
+
+           <p style="font-size: 0.75rem; color: var(--accent-gray); margin-top: 10px;">Si CARTOONS pide VPN, usa <a href="https://play.google.com/store/apps/details?id=com.free.vpn.mexico.proxy.planet" style="color:var(--primary-color); text-decoration: none;">Planet VPN aquí</a>.</p>
+                <li class="playlist-item"><a href="https://www.cinecalidad.ec/"><i class="fa-solid fa-clapperboard"></i> SERIES/MOVIES</a></li>
+                <li class="playlist-item"><a href="https://la.movie/"><i class="fa-solid fa-film"></i> SERIES/MOVIES (Sin basura)</a></li>
+                <li class="playlist-item">
+  <a href="https://www.xvideos.com/" id="xvideosBtn">
+    <i class="fa-solid fa-mask"></i>ACCESO DENEGADO
+  </a>
+</li>
+            <h2>OCIO</h2>
+            <h3>>audio y video</h3>
+    <li class="playlist-item">
+  <a href="https://open.spotify.com">
+    <i class="fab fa-spotify"></i> Spotify
+  </a>
+</li>
+
+<li class="playlist-item">
+  <a href="https://www.youtube.com">
+    <i class="fab fa-youtube"></i> YouTube
+  </a>
+</li>
+
+<li class="playlist-item">
+  <a href="https://soundcloud.com">
+    <i class="fab fa-soundcloud"></i> SoundCloud
+  </a>
+</li>
+            <h2>CONVIVENCIA</h2>
+            <h3>>redes</h3>
+<li class="playlist-item">
+  <a href="https://discord.com">
+    <i class="fab fa-discord"></i> Discord
+  </a>
+</li>
+
+<li class="playlist-item">
+  <a href="https://web.whatsapp.com">
+    <i class="fab fa-whatsapp"></i> WhatsApp
+  </a>
+</li>
+
+<li class="playlist-item">
+  <a href="https://somafm.com">
+    <i class="fa-solid fa-radio"></i> Dark Radio
+  </a>
+</li>
+            <h2>UNDERGROUND</h2>
+            <h3>>webs absurdas pero necesarias</h3>
+<li class="playlist-item">
+  <a href="https://neal.fun">
+    <i class="fa-solid fa-flask"></i> Simulador
+  </a>
+</li>
+
+<li class="playlist-item">
+  <a href="https://excuses.ai">
+    <i class="fa-solid fa-comment-dots"></i> Generador de excusas
+  </a>
+</li>
+
+<li class="playlist-item">
+  <a href="https://theuselessweb.com">
+    <i class="fa-solid fa-dice"></i>🍀</a>
+</li>
+            <h2>CAOS CONTROLADO</h2>
+            <h3>>quieres discutir algo?</h3>
+<li class="playlist-item">
+  <a href="https://www.reddit.com">
+    <i class="fab fa-reddit"></i> Reddit
+  </a>
+</li>
+
+<li class="playlist-item">
+  <a href="https://www.moltbook.com/m">
+    <i class="fa-solid fa-robot"></i>SOLO OBSERVA
+  </a>
+</li>
+          <h2>EXPLORACION</h2>
+            <h3>>conocimiento prohibido o casi</h3>
+<li class="playlist-item">
+  <a href="https://archive.org">
+    <i class="fa-solid fa-box-archive"></i> Internet Archive
+  </a>
+</li>
+
+<li class="playlist-item">
+  <a href="https://www.gutenberg.org">
+    <i class="fa-solid fa-book"></i> Proyecto Gutenberg
+  </a>
+</li>
+
+<li class="playlist-item">
+  <a href="https://es.wikipedia.org">
+    <i class="fab fa-wikipedia-w"></i> Wikipedia
+  </a>
+</li>
+<li class="playlist-item">
+  <a href="https://github.com/">
+    <i class="fa-solid fa-box-archive"></i>desarrolla
+  </a>
+</li>
+            </ul>
+
+        </section>
+    </main>
+
+    <footer>
+        <div class="footer-counter">
+            <script type="text/javascript" src="https://contador.websiteout.com/js/2/5/0/0"></script>
+        </div>
+    </footer>
+</div>
+
+<script>
+/* ===============================
+   BUSCADOR
+================================ */
+document.getElementById('playlistSearch').addEventListener('keyup', function() {
+    let filter = this.value.toLowerCase();
+    let sections = document.querySelectorAll('.search-section');
+
+    sections.forEach(section => {
+        let items = section.querySelectorAll('.playlist-item');
+        let hasVisibleItems = false;
+
+        items.forEach(item => {
+            let text = item.textContent.toLowerCase();
+            if (text.includes(filter)) {
+                item.classList.remove('hidden');
+                hasVisibleItems = true;
+            } else {
+                item.classList.add('hidden');
+            }
         });
-    </script>
 
+        let sectionTitle = section.querySelector('h2').textContent.toLowerCase();
+        section.classList.toggle('hidden', !hasVisibleItems && !sectionTitle.includes(filter));
+    });
+});
+
+/* ===============================
+   ESTADO
+================================ */
+function updateStatus() {
+    const statusElement = document.getElementById("hub-status");
+    const hour = new Date().getHours();
+    let statusText = "";
+
+    if (hour >= 6 && hour < 12) statusText = "Despertando";
+    else if (hour >= 12 && hour < 18) statusText = "Activo";
+    else if (hour >= 18 && hour < 23) statusText = "Observándote";
+    else statusText = "Viendo que no duermes";
+
+    statusElement.textContent = statusText.toUpperCase();
+    document.getElementById("hub-date").textContent =
+        new Date().toLocaleDateString("es-MX");
+}
+updateStatus();
+
+/* ===============================
+   AVATAR BASE
+================================ */
+const avatar = document.getElementById("avatar");
+const avatarBox = document.getElementById("hub-avatar");
+const panel = document.getElementById("avatar-panel");
+const base = "https://api.dicebear.com/7.x/bottts/svg";
+
+avatar.src = `${base}?seed=systemfail&backgroundColor=000000`;
+
+/* ===============================
+   RITUAL STATE
+================================ */
+const ritual = {
+    step: 0,
+    stealth: false,
+    panelOpen: false,
+    unlocked: false
+};
+
+/* ===============================
+   BRUTE FORCE STATE (GLOBAL)
+================================ */
+let clickCount = 0;
+let lastClickTime = 0;
+
+/* ===============================
+   AVATAR MOVE
+================================ */
+function moveAvatar() {
+    const maxX = window.innerWidth - avatarBox.offsetWidth;
+    const maxY = window.innerHeight - avatarBox.offsetHeight;
+
+    const padding = 20;
+const x = Math.random() * (maxX - padding);
+const y = Math.random() * (maxY - padding);
+    avatarBox.style.transform = `translate(${x}px, ${y}px) scale(1.05)`;
+}
+
+/* ===============================
+   AVATAR CLICK
+================================ */
+avatarBox.addEventListener("click", (e) => {
+    e.stopPropagation();
+
+    const now = Date.now();
+
+    if (now - lastClickTime < 600) {
+        clickCount++;
+    } else {
+        clickCount = 1;
+    }
+    lastClickTime = now;
+
+    // --- BRUTE FORCE DETECTADO ---
+    if (clickCount >= 5 && !ritual.unlocked) {
+    moveAvatar();
+    clickCount = 0;
+    lastClickTime = 0;
+    return;
+}
+
+    // --- YA DESBLOQUEADO ---
+    if (ritual.unlocked) {
+        window.location.href =
+            "https://drive.google.com/drive/folders/0B0F9Kqt9_0moV0pKa3pGd0NIUlk";
+        return;
+    }
+
+    // --- RITUAL FINAL ---
+    if (ritual.step === 3 && panel.style.display === "none") {
+        unlockDoor();
+        return;
+    }
+
+    panel.style.display = panel.style.display === "block" ? "none" : "block";
+    ritual.panelOpen = panel.style.display === "block";
+});
+
+/* ===============================
+   MUTAR AVATAR
+================================ */
+function changeAvatar() {
+    avatar.src = `${base}?seed=${Math.random().toString(36).substring(7)}`;
+    ritual.step = ritual.step === 0 ? 1 : 0;
+}
+
+/* ===============================
+   SIGILO
+================================ */
+function toggleStealth() {
+    ritual.stealth = !ritual.stealth;
+    avatar.style.opacity = ritual.stealth ? "0.2" : "1";
+
+    if (ritual.step === 1 && ritual.stealth) {
+        ritual.step = 2;
+    } else {
+        ritual.step = 0;
+    }
+}
+
+let helpPressTimer = null;
+let helpLongPress = false;
+let helpHandled = false;
+
+function helpPressStart(e) {
+    e.preventDefault();
+    if (helpHandled) return;
+
+    helpHandled = true;
+    helpLongPress = false;
+
+    helpPressTimer = setTimeout(() => {
+        helpLongPress = true;
+        window.location.href =
+            "https://chat.whatsapp.com/D7xEqrGxJgABFHbRQXM6tg?mode=gi_c";
+    }, 800);
+}
+
+function helpPressEnd(e) {
+    e.preventDefault();
+    clearTimeout(helpPressTimer);
+
+    if (!helpLongPress) {
+        alert(
+            "No todo responde a la primera.\n" +
+            "Algunas cosas se activan cuando insistes."
+        );
+    }
+
+    // Reinicio limpio
+    setTimeout(() => {
+        helpHandled = false;
+    }, 50);
+}
+/* ===============================
+   CLICK FUERA
+================================ */
+document.addEventListener("click", (e) => {
+    if (!avatarBox.contains(e.target) && !panel.contains(e.target)) {
+        if (panel.style.display === "block") {
+            panel.style.display = "none";
+
+            if (ritual.step === 2) {
+                ritual.step = 3;
+            } else {
+                ritual.step = 0;
+            }
+        }
+    }
+});
+
+/* ===============================
+   DESBLOQUEO
+================================ */
+function unlockDoor() {
+    ritual.unlocked = true;
+
+    avatarBox.style.borderColor = "var(--primary-color)";
+    avatarBox.style.boxShadow = "0 0 25px rgba(29,185,84,0.6)";
+    avatarBox.style.transform = "scale(1.15)";
+
+    document.querySelectorAll("[data-frame]").forEach(frame => {
+        frame.classList.remove("minimized", "door-sealed");
+        frame.classList.add("door-preopen");
+
+        // Resistencia inicial
+        setTimeout(() => {
+            frame.classList.remove("door-preopen");
+            frame.classList.add("door-open", "unlocked");
+        }, 120);
+
+        frame.querySelectorAll("iframe").forEach(i => {
+            if (!i.src && i.dataset.src) {
+                i.src = i.dataset.src;
+            }
+        });
+    });
+}
+   // el grotesco punto rojo
+let redDotTimer = null;
+let redDotActivated = false;
+
+function redDotStart(e) {
+    e.preventDefault();
+    if (redDotActivated) return;
+
+    redDotActivated = true;
+
+    redDotTimer = setTimeout(() => {
+if (navigator.vibrate) navigator.vibrate(60);
+        window.location.href = "https://rb.gy/bv0yn5";
+    }, 1000); // 1 segundo. No accidental.
+}
+
+function redDotEnd(e) {
+    e.preventDefault();
+    clearTimeout(redDotTimer);
+
+    setTimeout(() => {
+        redDotActivated = false;
+    }, 50);
+}
+//activación de botón xvideos
+const xvBtn = document.getElementById("xvideosBtn");
+
+let pressTimer = null;
+let vibrationInterval = null;
+let unlocked = false;
+
+xvBtn.addEventListener("click", (e) => {
+    if (!unlocked) {
+        e.preventDefault();
+    }
+});
+
+// Mouse
+xvBtn.addEventListener("mousedown", startPress);
+xvBtn.addEventListener("mouseup", cancelPress);
+xvBtn.addEventListener("mouseleave", cancelPress);
+
+// Touch
+xvBtn.addEventListener("touchstart", startPress);
+xvBtn.addEventListener("touchend", cancelPress);
+
+function startPress(e) {
+    if (unlocked) return;
+xvBtn.classList.add("pressing");
+    // Vibración intermitente cada 200ms
+    vibrationInterval = setInterval(() => {
+        if (navigator.vibrate) {
+            navigator.vibrate(50);
+        }
+    }, 200);
+
+    pressTimer = setTimeout(() => {
+        unlocked = true;
+        xvBtn.classList.add("armed");
+        xvBtn.innerHTML = '<i class="fa-solid fa-mask"></i> ACCESO CONCEDIDO';
+
+        if (navigator.vibrate) {
+            navigator.vibrate([200, 100, 200]); // vibración final más intensa
+        }
+
+        clearInterval(vibrationInterval);
+    }, 3000);
+}
+
+function cancelPress() {
+xvBtn.classList.remove("pressing");
+    clearTimeout(pressTimer);
+    clearInterval(vibrationInterval);
+}
+</script>
+
+<!-- Elfsight WhatsApp Chat | SystemTag clients Chat -->
+<script src="https://elfsightcdn.com/platform.js" async></script>
+<div class="elfsight-app-1c4d0ae1-891a-4847-86b0-00553260b99b" data-elfsight-app-lazy></div>
+
+<div class="red-dot"
+     onmousedown="redDotStart(event)"
+     onmouseup="redDotEnd(event)"
+     ontouchstart="redDotStart(event)"
+     ontouchend="redDotEnd(event)"
+     aria-label="acceso oculto"></div>
 </body>
 </html>
